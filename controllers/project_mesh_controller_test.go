@@ -255,7 +255,7 @@ var _ = When("Namespace is created", Label(labels.EvnTest), func() {
 			actualTestNs := &v1.Namespace{}
 			Eventually(func() string {
 				_ = cli.Get(context.Background(), types.NamespacedName{Name: testNs.Name}, actualTestNs)
-				return actualTestNs.Annotations[controllers.AnnotationGatewayName]
+				return actualTestNs.Annotations[controllers.AnnotationPublicGatewayName]
 			}).
 				WithTimeout(timeout).
 				WithPolling(interval).
@@ -280,7 +280,7 @@ var _ = When("Namespace is created", Label(labels.EvnTest), func() {
 			actualTestNs := &v1.Namespace{}
 			Eventually(func() string {
 				_ = cli.Get(context.Background(), types.NamespacedName{Name: testNs.Name}, actualTestNs)
-				return actualTestNs.Annotations[controllers.AnnotationGatewayName]
+				return actualTestNs.Annotations[controllers.AnnotationPublicGatewayName]
 			}).
 				WithTimeout(timeout).
 				WithPolling(interval).
@@ -305,7 +305,7 @@ var _ = When("Namespace is created", Label(labels.EvnTest), func() {
 			actualTestNs := &v1.Namespace{}
 			Eventually(func() string {
 				_ = cli.Get(context.Background(), types.NamespacedName{Name: testNs.Name}, actualTestNs)
-				return actualTestNs.Annotations[controllers.AnnotationGatewayExternalHost]
+				return actualTestNs.Annotations[controllers.AnnotationPublicGatewayExternalHost]
 			}).
 				WithTimeout(timeout).
 				WithPolling(interval).
@@ -330,7 +330,7 @@ var _ = When("Namespace is created", Label(labels.EvnTest), func() {
 			actualTestNs := &v1.Namespace{}
 			Eventually(func() string {
 				_ = cli.Get(context.Background(), types.NamespacedName{Name: testNs.Name}, actualTestNs)
-				return actualTestNs.Annotations[controllers.AnnotationGatewayInternalHost]
+				return actualTestNs.Annotations[controllers.AnnotationPublicGatewayInternalHost]
 			}).
 				WithTimeout(timeout).
 				WithPolling(interval).

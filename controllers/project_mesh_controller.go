@@ -17,13 +17,13 @@ import (
 )
 
 const (
-	AnnotationServiceMesh         = "opendatahub.io/service-mesh"
-	AnnotationGatewayName         = "mesh.opendatahub.io/gateway-name"
-	AnnotationGatewayExternalHost = "mesh.opendatahub.io/gateway-host-external"
-	AnnotationGatewayInternalHost = "mesh.opendatahub.io/gateway-host-internal"
-	LabelMaistraGw                = "maistra.io/gateway-name"
-	LabelMaistraGwNs              = "maistra.io/gateway-namespace"
-	MeshNamespace                 = "istio-system"
+	AnnotationServiceMesh               = "opendatahub.io/service-mesh"
+	AnnotationPublicGatewayName         = "mesh.opendatahub.io/public-gateway-name"
+	AnnotationPublicGatewayExternalHost = "mesh.opendatahub.io/public-gateway-host-external"
+	AnnotationPublicGatewayInternalHost = "mesh.opendatahub.io/public-gateway-host-internal"
+	LabelMaistraGw                      = "maistra.io/gateway-name"
+	LabelMaistraGwNs                    = "maistra.io/gateway-namespace"
+	MeshNamespace                       = "istio-system"
 )
 
 // OpenshiftServiceMeshReconciler holds the controller configuration.
