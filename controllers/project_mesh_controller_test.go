@@ -219,7 +219,8 @@ var _ = When("Namespace is created", Label(labels.EvnTest), func() {
 				Spec: routev1.RouteSpec{
 					Host: "istio.io",
 					To: routev1.RouteTargetReference{
-						Name: "odh-gateway",
+						Name: "istio-ingressgateway",
+						Kind: "Service",
 					},
 				},
 			}
@@ -254,7 +255,7 @@ var _ = When("Namespace is created", Label(labels.EvnTest), func() {
 			actualTestNs := &v1.Namespace{}
 			Eventually(func() string {
 				_ = cli.Get(context.Background(), types.NamespacedName{Name: testNs.Name}, actualTestNs)
-				return actualTestNs.Annotations[controllers.AnnotationGateway]
+				return actualTestNs.Annotations[controllers.AnnotationGatewayName]
 			}).
 				WithTimeout(timeout).
 				WithPolling(interval).
@@ -279,14 +280,14 @@ var _ = When("Namespace is created", Label(labels.EvnTest), func() {
 			actualTestNs := &v1.Namespace{}
 			Eventually(func() string {
 				_ = cli.Get(context.Background(), types.NamespacedName{Name: testNs.Name}, actualTestNs)
-				return actualTestNs.Annotations[controllers.AnnotationGateway]
+				return actualTestNs.Annotations[controllers.AnnotationGatewayName]
 			}).
 				WithTimeout(timeout).
 				WithPolling(interval).
 				Should(Equal("opendatahub/odh-gateway"))
 		})
 
-		It("should add gateway host to the namespace", func() {
+		It("should add external gateway host to the namespace", func() {
 			// given
 			testNs = &v1.Namespace{
 				ObjectMeta: metav1.ObjectMeta{
@@ -304,11 +305,36 @@ var _ = When("Namespace is created", Label(labels.EvnTest), func() {
 			actualTestNs := &v1.Namespace{}
 			Eventually(func() string {
 				_ = cli.Get(context.Background(), types.NamespacedName{Name: testNs.Name}, actualTestNs)
-				return actualTestNs.Annotations[controllers.AnnotationGatewayHost]
+				return actualTestNs.Annotations[controllers.AnnotationGatewayExternalHost]
 			}).
 				WithTimeout(timeout).
 				WithPolling(interval).
 				Should(Equal("istio.io"))
+		})
+
+		It("should add internal gateway host to the namespace", func() {
+			// given
+			testNs = &v1.Namespace{
+				ObjectMeta: metav1.ObjectMeta{
+					Name: "plain-meshified-ns",
+					Annotations: map[string]string{
+						controllers.AnnotationServiceMesh: "true",
+					},
+				},
+			}
+
+			// when
+			Expect(cli.Create(context.Background(), testNs)).To(Succeed())
+
+			// then
+			actualTestNs := &v1.Namespace{}
+			Eventually(func() string {
+				_ = cli.Get(context.Background(), types.NamespacedName{Name: testNs.Name}, actualTestNs)
+				return actualTestNs.Annotations[controllers.AnnotationGatewayInternalHost]
+			}).
+				WithTimeout(timeout).
+				WithPolling(interval).
+				Should(Equal("istio-ingressgateway.istio-system.svc.cluster.local"))
 		})
 
 	})

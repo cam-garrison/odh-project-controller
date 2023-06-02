@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -10,7 +11,9 @@ import (
 )
 
 func (r *OpenshiftServiceMeshReconciler) addGatewayAnnotations(ctx context.Context, ns *v1.Namespace) error {
-	if ns.ObjectMeta.Annotations[AnnotationGatewayHost] != "" && ns.ObjectMeta.Annotations[AnnotationGateway] != "" {
+	if ns.ObjectMeta.Annotations[AnnotationGatewayExternalHost] != "" &&
+		ns.ObjectMeta.Annotations[AnnotationGatewayInternalHost] != "" &&
+		ns.ObjectMeta.Annotations[AnnotationGatewayName] != "" {
 		// If annotation is present we have nothing to do
 		return nil
 	}
@@ -25,10 +28,11 @@ func (r *OpenshiftServiceMeshReconciler) addGatewayAnnotations(ctx context.Conte
 		return nil
 	}
 
-	ns.ObjectMeta.Annotations[AnnotationGatewayHost] = ExtractHostName(routes.Items[0].Spec.Host)
+	ns.ObjectMeta.Annotations[AnnotationGatewayExternalHost] = ExtractHostName(routes.Items[0].Spec.Host)
+	ns.ObjectMeta.Annotations[AnnotationGatewayInternalHost] = fmt.Sprintf("%s.%s.svc.cluster.local", routes.Items[0].Spec.To.Name, MeshNamespace)
 	gateway := extractGateway(routes.Items[0].ObjectMeta)
 	if gateway != "" {
-		ns.ObjectMeta.Annotations[AnnotationGateway] = gateway
+		ns.ObjectMeta.Annotations[AnnotationGatewayName] = gateway
 	}
 	return r.Client.Update(ctx, ns)
 }

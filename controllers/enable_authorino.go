@@ -19,7 +19,7 @@ type reconcileFunc func(ctx context.Context, ns *v1.Namespace) error
 func (r *OpenshiftServiceMeshReconciler) reconcileAuthConfig(ctx context.Context, ns *v1.Namespace) error {
 	log := r.Log.WithValues("feature", "authorino", "namespace", ns.Name)
 
-	desiredAuthConfig, err := r.createAuthConfig(ns, ns.ObjectMeta.Annotations[AnnotationGatewayHost])
+	desiredAuthConfig, err := r.createAuthConfig(ns, ns.ObjectMeta.Annotations[AnnotationGatewayExternalHost])
 	if err != nil {
 		log.Error(err, "Failed creating AuthConfig object")
 		return err
